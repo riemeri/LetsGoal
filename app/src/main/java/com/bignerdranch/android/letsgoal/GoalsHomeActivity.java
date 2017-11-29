@@ -2,13 +2,36 @@ package com.bignerdranch.android.letsgoal;
 
 import android.content.Intent;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 
 public class GoalsHomeActivity extends SingleFragmentActivity
-        implements GoalsHomeFragment.Callbacks, GoalFragment.Callbacks {
+        implements GoalsHomeFragment.Callbacks, AddGoalFragment.Callbacks {
+
+    private DrawerLayout mDrawerLayout;
+    private ActionBarDrawerToggle mToggle;
+
+    /*@Override
+    public void onCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
+        super.onCreate(savedInstanceState, persistentState);
+
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.open, R.string.close);
+
+        mDrawerLayout.addDrawerListener(mToggle);
+        mToggle.syncState();
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }*/
 
     @Override
     protected Fragment createFragment() {
         return new GoalsHomeFragment();
+    }
+
+    @Override
+    public void onHomeCreation() {
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @Override
@@ -43,7 +66,7 @@ public class GoalsHomeActivity extends SingleFragmentActivity
         Fragment newDetail;
 
         if (lastGoal.getID().compareTo(goal.getID()) != 0) {
-            newDetail = GoalFragment.newInstance(lastGoal.getID());
+            newDetail = AddGoalFragment.newInstance(lastGoal.getID());
 
             GoalStorage.get(this).deleteGoal(goal.getID());
 
@@ -57,7 +80,7 @@ public class GoalsHomeActivity extends SingleFragmentActivity
             /*Goal newGoal = new Goal();
             GoalLab.get(this).addGoal(newGoal);
 
-            newDetail = GoalFragment.newInstance(newGoal.getID());
+            newDetail = AddGoalFragment.newInstance(newGoal.getID());
             */
         }
         onGoalUpdated(goal);

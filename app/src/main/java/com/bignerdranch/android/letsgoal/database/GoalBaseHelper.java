@@ -27,6 +27,7 @@ public class GoalBaseHelper extends SQLiteOpenHelper{
                 GoalTable.Cols.DUEDATE + ", " +
                 GoalTable.Cols.NOTES + ", " +
                 GoalTable.Cols.PROGRESS + ", " +
+                GoalTable.Cols.IMPORTANCE + ", " +
                 GoalTable.Cols.COMPLETED +
                 ")"
         );

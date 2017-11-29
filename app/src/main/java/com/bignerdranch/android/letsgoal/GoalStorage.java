@@ -141,6 +141,7 @@ public class GoalStorage {
         values.put(GoalTable.Cols.DUEDATE, goal.getDueDate().getTime());
         values.put(GoalTable.Cols.NOTES, goal.getNotes());
         values.put(GoalTable.Cols.PROGRESS, goal.getProgress());
+        values.put(GoalTable.Cols.IMPORTANCE, goal.getImportance());
         values.put(GoalTable.Cols.COMPLETED, goal.isCompleted() ? 1 : 0);
 
         return values;

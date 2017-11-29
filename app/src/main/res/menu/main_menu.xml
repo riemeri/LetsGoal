@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/settings_button"
+        android:icon="@drawable/ic_menu_settings"
+        android:title="@string/settings_label"
+        app:showAsAction="ifRoom|withText"/>
+
+    <item
+        android:id="@+id/menu_button"
+        android:icon="@drawable/ic_app_menu"
+        android:title="Menu"
+        app:showAsAction="ifRoom|withText"/>
+
+    <item
+        android:id="@+id/menu_add_button"
+        android:icon="@drawable/ic_menu_delete"
+        android:title="Add Goal"
+        app:showAsAction="ifRoom|withText"/>
+
+</menu>

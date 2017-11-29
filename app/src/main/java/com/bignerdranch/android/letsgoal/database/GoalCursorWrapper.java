@@ -24,6 +24,7 @@ public class GoalCursorWrapper extends CursorWrapper {
         long dueDate = getLong(getColumnIndex(GoalTable.Cols.DUEDATE));
         String notes = getString(getColumnIndex(GoalTable.Cols.NOTES));
         int progress = getInt(getColumnIndex(GoalTable.Cols.PROGRESS));
+        int importance = getInt(getColumnIndex(GoalTable.Cols.IMPORTANCE));
         int isCompleted = getInt(getColumnIndex(GoalTable.Cols.COMPLETED));
 
         Goal goal = new Goal(UUID.fromString(uuidString));
@@ -31,6 +32,7 @@ public class GoalCursorWrapper extends CursorWrapper {
         goal.setDueDate(new Date(dueDate));
         goal.setNotes(notes);
         goal.setProgress(progress);
+        goal.setImportance(importance);
         goal.setCompleted(isCompleted != 0);
 
         return goal;

@@ -1,6 +1,17 @@
 <resources>
     <string name="app_name">Lets Goal</string>
-    <string name="goal_title_label">Title</string>
+    <string name="goal_title_label">Goal Title</string>
     <string name="goal_title_hint">Enter a title for the goal.</string>
     <string name="delete_goal">Delete Goal</string>
+    <string name="settings_label">Settings</string>
+    <string name="open">Open</string>
+    <string name="close">Close</string>
+
+    <string-array name="importance_array">
+        <item>Very Important</item>
+        <item>Important</item>
+        <item>Normal</item>
+        <item>Casual</item>
+        <item>Not Important</item>
+    </string-array>
 </resources>

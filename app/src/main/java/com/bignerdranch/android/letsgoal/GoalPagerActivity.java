@@ -16,7 +16,7 @@ import java.util.UUID;
  * Created by ianri on 11/28/2017.
  */
 
-public class GoalPagerActivity extends AppCompatActivity implements GoalFragment.Callbacks {
+public class GoalPagerActivity extends AppCompatActivity implements AddGoalFragment.Callbacks {
     private static final String EXTRA_GOAL_ID = "com.bignerdranch.android.letsgoal.goal_id";
 
     private ViewPager mViewPager;
@@ -43,7 +43,7 @@ public class GoalPagerActivity extends AppCompatActivity implements GoalFragment
             @Override
             public Fragment getItem(int position) {
                 Goal goal = mGoals.get(position);
-                return GoalFragment.newInstance(goal.getID());
+                return AddGoalFragment.newInstance(goal.getID());
             }
 
             @Override

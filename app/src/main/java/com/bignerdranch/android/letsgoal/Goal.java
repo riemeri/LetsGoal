@@ -14,6 +14,7 @@ public class Goal {
     private String mTitle;
     private Date mDueDate;
     private int mProgress;
+    private int mImportance;
     private String mNotes;
     private boolean mCompleted;
 
@@ -24,6 +25,7 @@ public class Goal {
     public Goal(UUID id) {
         mID = id;
         mDueDate = new Date();
+        mImportance = 2;
     }
 
     public int getDaysLeft() {
@@ -71,6 +73,30 @@ public class Goal {
 
     public void setProgress(int progress) {
         mProgress = progress;
+    }
+
+    public int getImportance() {
+        return mImportance;
+    }
+
+    public int getSpinnerIndex() {
+        switch (mImportance){
+            case 0:
+                return 4;
+            case 1:
+                return 3;
+            case 2:
+                return 2;
+            case 3:
+                return 1;
+            case 4:
+                return 0;
+        }
+        return 0;
+    }
+
+    public void setImportance(int importance) {
+        mImportance = importance;
     }
 
     public boolean isCompleted() {

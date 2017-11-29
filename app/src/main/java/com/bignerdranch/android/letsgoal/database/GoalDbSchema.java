@@ -13,6 +13,7 @@ public class GoalDbSchema {
             public static final String TITLE = "title";
             public static final String DUEDATE = "duedate";
             public static final String PROGRESS = "progress";
+            public static final String IMPORTANCE = "importance";
             public static final String NOTES = "notes";
             public static final String COMPLETED = "completed";
         }
