@@ -87,7 +87,7 @@ public class GoalStorage {
         }
     }
 
-    public Goal getLastOrNextCrime(Goal goal) {
+    public Goal getLastOrNextGoal(Goal goal) {
         List<Goal> goals = getGoals();
 
         if (goals.size() > 1) {
@@ -111,7 +111,7 @@ public class GoalStorage {
         return new File(filesDir, goal.getPhotoFileName());
     }*/
 
-    public void updateCrime(Goal goal) {
+    public void updateGoal(Goal goal) {
         String uuidString = goal.getID().toString();
         ContentValues values = getContentValues(goal);
 

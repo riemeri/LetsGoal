@@ -1,5 +1,7 @@
 package com.bignerdranch.android.letsgoal;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
@@ -26,9 +28,25 @@ public class GoalsHomeFragment extends Fragment {
     private CardView mCardView;
     private GoalAdapter mAdapter;
     private Button mAddButton;
+    private Callbacks mCallbacks;
 
-    public static GoalsHomeFragment newInstance() {
-        return new GoalsHomeFragment();
+    /**
+     * Required interface for hosting activities
+     */
+    public interface Callbacks {
+        void onGoalSelected(Goal goal);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mCallbacks = (Callbacks) context;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        //setHasOptionsMenu(true);
     }
 
     @Override
@@ -50,10 +68,17 @@ public class GoalsHomeFragment extends Fragment {
         return v;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateUI();
+    }
+
     private void createNewGoal() {
         Goal goal = new Goal();
         GoalStorage.get(getActivity()).addGoal(goal);
         updateUI();
+        mCallbacks.onGoalSelected(goal);
     }
 
     public void updateUI() {
@@ -80,6 +105,7 @@ public class GoalsHomeFragment extends Fragment {
 
         public GoalHolder(LayoutInflater inflater, ViewGroup parent) {
             super(inflater.inflate(R.layout.list_item_goal_card, parent, false));
+            itemView.setOnClickListener(this);
 
             mTitleTextView = (TextView) itemView.findViewById(R.id.goal_title);
             mDateTextView = (TextView) itemView.findViewById(R.id.goal_date_text);
@@ -101,7 +127,7 @@ public class GoalsHomeFragment extends Fragment {
 
         @Override
         public void onClick(View view) {
-
+            mCallbacks.onGoalSelected(mGoal);
         }
     }
 
