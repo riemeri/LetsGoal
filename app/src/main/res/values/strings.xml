@@ -6,6 +6,7 @@
     <string name="settings_label">Settings</string>
     <string name="open">Open</string>
     <string name="close">Close</string>
+    <string name="date_picker_title">Complete Goal By:</string>
 
     <string-array name="importance_array">
         <item>Very Important</item>

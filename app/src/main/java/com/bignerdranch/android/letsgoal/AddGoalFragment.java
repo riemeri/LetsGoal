@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -16,11 +17,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
+import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -31,11 +35,23 @@ import java.util.UUID;
 public class AddGoalFragment extends Fragment {
 
     private static final String ARG_GOAL_ID = "goal_id";
+    private static final String ARG_IS_NEW = "is_new";
+    private static final String DIALOG_DATE = "DialogDate";
+
+    private static final int REQUEST_DATE = 0;
 
     private Goal mGoal;
     private EditText mTitleField;
     private Spinner mSpinner;
+    private Button mDateButton;
+    private Button mSaveButton;
+    private Button mCancelButton;
+    private TextView mDateTextView;
     private Callbacks mCallbacks;
+
+    private Boolean mIsNew;
+    private String mTempTitle;
+    private int mImportance;
 
     public interface Callbacks {
         void onGoalUpdated(Goal goal);
@@ -43,9 +59,10 @@ public class AddGoalFragment extends Fragment {
         void onGoalAdded(Goal goal);
     }
 
-    public static AddGoalFragment newInstance(UUID goalId) {
+    public static AddGoalFragment newInstance(UUID goalId, boolean isNew) {
         Bundle args = new Bundle();
         args.putSerializable(ARG_GOAL_ID, goalId);
+        args.putBoolean(ARG_IS_NEW, isNew);
 
         AddGoalFragment fragment = new AddGoalFragment();
         fragment.setArguments(args);
@@ -63,6 +80,7 @@ public class AddGoalFragment extends Fragment {
         super.onCreate(savedInstanceState);
         UUID goalId = (UUID) getArguments().getSerializable(ARG_GOAL_ID);
         mGoal = GoalStorage.get(getActivity()).getGoal(goalId);
+        mIsNew = getArguments().getBoolean(ARG_IS_NEW);
         setHasOptionsMenu(true);
     }
 
@@ -82,6 +100,8 @@ public class AddGoalFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_add_goal, container, false);
 
+        mTempTitle = mGoal.getTitle();
+
         mTitleField = (EditText) v.findViewById(R.id.goal_title);
         mTitleField.setText(mGoal.getTitle());
         mTitleField.addTextChangedListener(new TextWatcher() {
@@ -92,13 +112,28 @@ public class AddGoalFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                mGoal.setTitle(s.toString());
-                updateGoal();
+                mTempTitle = s.toString();
+                //mGoal.setTitle(s.toString());
+                //updateGoal();
             }
 
             @Override
             public void afterTextChanged(Editable editable) {
 
+            }
+        });
+
+        mDateTextView = (TextView) v.findViewById(R.id.dateTextView);
+
+        mDateButton = (Button) v.findViewById(R.id.calendarButton);
+        updateDate();
+        mDateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FragmentManager manager = getFragmentManager();
+                DatePickerFragment dialog = DatePickerFragment.newIstance(mGoal.getDueDate());
+                dialog.setTargetFragment(AddGoalFragment.this, REQUEST_DATE);
+                dialog.show(manager, DIALOG_DATE);
             }
         });
 
@@ -114,19 +149,24 @@ public class AddGoalFragment extends Fragment {
             public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long id) {
                 switch (pos) {
                     case 0:
-                        mGoal.setImportance(4);
+                        mImportance = 4;
+                        //tempGoal.setImportance(4);
                         break;
                     case 1:
-                        mGoal.setImportance(3);
+                        mImportance = 3;
+                        //tempGoal.setImportance(3);
                         break;
                     case 2:
-                        mGoal.setImportance(2);
+                        mImportance = 2;
+                        //tempGoal.setImportance(2);
                         break;
                     case 3:
-                        mGoal.setImportance(1);
+                        mImportance = 1;
+                        //tempGoal.setImportance(1);
                         break;
                     case 4:
-                        mGoal.setImportance(0);
+                        mImportance = 0;
+                        //tempGoal.setImportance(0);
                 }
                 updateGoal();
             }
@@ -137,8 +177,33 @@ public class AddGoalFragment extends Fragment {
             }
         });
 
+        mSaveButton = (Button) v.findViewById(R.id.saveButton);
+        mSaveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mGoal.setTitle(mTempTitle);
+                mGoal.setImportance(mImportance);
+                updateGoal();
+                getActivity().finish();
+            }
+        });
+
+        mCancelButton = (Button) v.findViewById(R.id.cancelButton);
+        mCancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mIsNew) {
+                    delelteGoal();
+                } else {
+                    getActivity().finish();
+                }
+            }
+        });
+
         return v;
     }
+
+
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -151,7 +216,6 @@ public class AddGoalFragment extends Fragment {
         switch (item.getItemId()) {
             case R.id.delete_crime:
                 delelteGoal();
-                //getActivity().finish();
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -161,6 +225,13 @@ public class AddGoalFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode != Activity.RESULT_OK) {
             return;
+        }
+
+        if (requestCode == REQUEST_DATE) {
+            Date date = (Date) data.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
+            mGoal.setDueDate(date);
+            updateGoal();
+            updateDate();
         }
 
         super.onActivityResult(requestCode, resultCode, data);
@@ -188,6 +259,10 @@ public class AddGoalFragment extends Fragment {
         }*/
 
 
+    }
+
+    private void updateDate() {
+        mDateTextView.setText(mGoal.getDueDate().toString());
     }
 
     private class spAdapter implements SpinnerAdapter {

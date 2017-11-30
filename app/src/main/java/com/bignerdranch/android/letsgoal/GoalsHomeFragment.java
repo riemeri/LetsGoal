@@ -41,7 +41,7 @@ public class GoalsHomeFragment extends Fragment {
      * Required interface for hosting activities
      */
     public interface Callbacks {
-        void onGoalSelected(Goal goal);
+        void onGoalSelected(Goal goal, boolean isNew);
         void onHomeCreation();
     }
 
@@ -123,7 +123,7 @@ public class GoalsHomeFragment extends Fragment {
         Goal goal = new Goal();
         GoalStorage.get(getActivity()).addGoal(goal);
         updateUI();
-        mCallbacks.onGoalSelected(goal);
+        mCallbacks.onGoalSelected(goal, true);
     }
 
     public void updateUI() {
@@ -197,7 +197,7 @@ public class GoalsHomeFragment extends Fragment {
 
         @Override
         public void onClick(View view) {
-            mCallbacks.onGoalSelected(mGoal);
+            mCallbacks.onGoalSelected(mGoal, false);
         }
     }
 

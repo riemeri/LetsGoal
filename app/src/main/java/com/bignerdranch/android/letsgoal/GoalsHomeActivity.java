@@ -35,14 +35,14 @@ public class GoalsHomeActivity extends SingleFragmentActivity
     }
 
     @Override
-    public void onGoalSelected(Goal goal) {
-        Intent intent = GoalPagerActivity.newIntent(this, goal.getID());
+    public void onGoalSelected(Goal goal, boolean isNew) {
+        Intent intent = GoalPagerActivity.newIntent(this, goal.getID(), isNew);
         startActivity(intent);
     }
 
     @Override
     public void onGoalAdded(Goal goal) {
-        Intent intent = GoalPagerActivity.newIntent(this, goal.getID());
+        Intent intent = GoalPagerActivity.newIntent(this, goal.getID(), true);
         startActivity(intent);
 
         GoalsHomeFragment homeFragment = (GoalsHomeFragment) getSupportFragmentManager()
@@ -66,7 +66,7 @@ public class GoalsHomeActivity extends SingleFragmentActivity
         Fragment newDetail;
 
         if (lastGoal.getID().compareTo(goal.getID()) != 0) {
-            newDetail = AddGoalFragment.newInstance(lastGoal.getID());
+            newDetail = AddGoalFragment.newInstance(lastGoal.getID(), false);
 
             GoalStorage.get(this).deleteGoal(goal.getID());
 

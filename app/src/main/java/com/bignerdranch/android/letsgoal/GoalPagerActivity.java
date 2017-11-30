@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -18,13 +19,16 @@ import java.util.UUID;
 
 public class GoalPagerActivity extends AppCompatActivity implements AddGoalFragment.Callbacks {
     private static final String EXTRA_GOAL_ID = "com.bignerdranch.android.letsgoal.goal_id";
+    private static final String EXTRA_IS_NEW = "com.bignerdranch.android.letsgoal.is_new";
 
     private ViewPager mViewPager;
     private List<Goal> mGoals;
+    private boolean mIsNew;
 
-    public static Intent newIntent(Context packageContext, UUID goalId) {
+    public static Intent newIntent(Context packageContext, UUID goalId, boolean isNew) {
         Intent intent = new Intent(packageContext, GoalPagerActivity.class);
         intent.putExtra(EXTRA_GOAL_ID, goalId);
+        intent.putExtra(EXTRA_IS_NEW, isNew);
         return intent;
     }
 
@@ -34,16 +38,24 @@ public class GoalPagerActivity extends AppCompatActivity implements AddGoalFragm
         setContentView(R.layout.activity_goal_pager);
 
         UUID goalId = (UUID) getIntent().getSerializableExtra(EXTRA_GOAL_ID);
+        mIsNew = getIntent().getBooleanExtra(EXTRA_IS_NEW, false);
 
         mViewPager = (ViewPager) findViewById(R.id.goal_view_pager);
 
-        mGoals = GoalStorage.get(this).getGoals();
+        if (mIsNew) {
+            mGoals = new ArrayList<Goal>();
+            mGoals.add(GoalStorage.get(this).getGoal(goalId));
+        }
+        else {
+            mGoals = GoalStorage.get(this).getGoals();
+        }
+
         FragmentManager fragmentManager = getSupportFragmentManager();
         mViewPager.setAdapter(new FragmentStatePagerAdapter(fragmentManager) {
             @Override
             public Fragment getItem(int position) {
                 Goal goal = mGoals.get(position);
-                return AddGoalFragment.newInstance(goal.getID());
+                return AddGoalFragment.newInstance(goal.getID(), mIsNew);
             }
 
             @Override
